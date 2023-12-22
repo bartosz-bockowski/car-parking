@@ -3,11 +3,13 @@ package com.example.carparking.controller;
 import com.example.carparking.command.CarCommand;
 import com.example.carparking.domain.Car;
 import com.example.carparking.domain.Parking;
+import com.example.carparking.exception.NotFoundException;
 import com.example.carparking.model.ParkingType;
 import com.example.carparking.model.VehicleEngineType;
 import com.example.carparking.service.CarService;
 import com.example.carparking.service.ParkingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -103,6 +104,17 @@ public class CarControllerIntegrationTest {
         carService.setParking(2L, 1L);
         this.mockMvc.perform(patch("/api/v1/car/1/setParking/1"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldDeleteCar() throws Exception {
+        Car car1 = new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010);
+        carService.save(car1);
+
+        this.mockMvc.perform(delete("/api/v1/car/1"))
+                .andExpect(status().isOk());
+
+        Assertions.assertThrows(NotFoundException.class, () -> carService.findById(1L));
     }
 
 }
