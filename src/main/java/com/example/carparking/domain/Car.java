@@ -14,6 +14,20 @@ import java.math.BigDecimal;
 @Setter
 public class Car {
 
+    public Car() {
+
+    }
+
+    public Car(String brand, String model, BigDecimal price, int lengthInMillimeters, int widthInMillimeters, VehicleEngineType engineType, int productionYear) {
+        this.brand = brand;
+        this.model = model;
+        this.price = price;
+        this.lengthInMillimeters = lengthInMillimeters;
+        this.widthInMillimeters = widthInMillimeters;
+        this.engineType = engineType;
+        this.productionYear = productionYear;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

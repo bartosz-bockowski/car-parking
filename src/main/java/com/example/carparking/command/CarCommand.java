@@ -1,6 +1,7 @@
 package com.example.carparking.command;
 
 import com.example.carparking.model.VehicleEngineType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Data
+@AllArgsConstructor
 public class CarCommand {
 
     @NotEmpty

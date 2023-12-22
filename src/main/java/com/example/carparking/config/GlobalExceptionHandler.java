@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ForbiddenEngineTypeException.class)
     public ResponseEntity<ApiError> handleForbiddenEngineTypeException(ForbiddenEngineTypeException e) {
-        return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ParkingFullException.class)
     public ResponseEntity<ApiError> handleNotFoundException(ParkingFullException e) {
-        return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ApiError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

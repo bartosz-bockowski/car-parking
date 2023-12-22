@@ -19,11 +19,21 @@ import java.util.Objects;
 @Setter
 public class Parking {
 
+    public Parking() {
+
+    }
+
+    public Parking(String name, int numberOfSpaces, ParkingType type) {
+        this.name = name;
+        this.numberOfSpaces = numberOfSpaces;
+        this.type = type;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "parking")
+    @OneToMany(mappedBy = "parking", fetch = FetchType.EAGER)
     private List<Car> cars = new ArrayList<>();
 
     @NotEmpty

@@ -26,10 +26,10 @@ public class CarController {
     public ResponseEntity<CarDTO> save(@Valid @RequestBody CarCommand carCommand) {
         return new ResponseEntity<>(modelMapper
                 .map(carService.save(modelMapper
-                        .map(carCommand, Car.class)), CarDTO.class), HttpStatus.OK);
+                        .map(carCommand, Car.class)), CarDTO.class), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/setParking/{carId}/{parkingId}")
+    @PatchMapping("/{carId}/setParking/{parkingId}")
     public ResponseEntity<CarDTO> setParking(@PathVariable Long carId, @PathVariable Long parkingId) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return new ResponseEntity<>(modelMapper
