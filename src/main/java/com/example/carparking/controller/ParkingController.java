@@ -25,7 +25,7 @@ public class ParkingController {
     public ResponseEntity<ParkingDTO> save(@Valid @RequestBody ParkingCommand parkingCommand) {
         return new ResponseEntity<>(modelMapper
                 .map(parkingService.save(
-                        modelMapper.map(parkingCommand, Parking.class)), ParkingDTO.class), HttpStatus.OK);
+                        modelMapper.map(parkingCommand, Parking.class)), ParkingDTO.class), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{parkingId}")
@@ -33,5 +33,5 @@ public class ParkingController {
         parkingService.deleteById(parkingId);
         return HttpStatus.OK;
     }
-    
+
 }
