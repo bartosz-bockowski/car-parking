@@ -5,6 +5,8 @@ import com.example.carparking.domain.Parking;
 import com.example.carparking.exception.NotFoundException;
 import com.example.carparking.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +20,10 @@ public class CarService {
     public Car findById(Long carId) {
         return carRepository.findById(carId)
                 .orElseThrow(() -> new NotFoundException("Car with id " + carId + " not found."));
+    }
+
+    public Page<Car> findAll(Pageable pageable) {
+        return carRepository.findAll(pageable);
     }
 
     public Car save(Car car) {

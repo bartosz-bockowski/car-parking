@@ -7,11 +7,14 @@ import com.example.carparking.service.CarService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/car")
@@ -27,6 +30,13 @@ public class CarController {
         return new ResponseEntity<>(modelMapper
                 .map(carService.save(modelMapper
                         .map(carCommand, Car.class)), CarDTO.class), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/all")
+    public List<CarDTO> getAll(@SortDefault("id") Pageable pageable) {
+        return carService.findAll(pageable).stream()
+                .map(car -> modelMapper.map(car, CarDTO.class))
+                .toList();
     }
 
     @PatchMapping("/{carId}/setParking/{parkingId}")

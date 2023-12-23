@@ -24,6 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,12 +52,6 @@ public class CarControllerIntegrationTest {
     void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .build();
-
-        Car car1 = new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010);
-        carService.save(car1);
-
-        Parking parking = new Parking("parkingGlowny", 2, ParkingType.ABOVEGROUND);
-        parkingService.save(parking);
     }
 
     @Test
@@ -72,6 +67,12 @@ public class CarControllerIntegrationTest {
 
     @Test
     void shouldSetParking() throws Exception {
+        Car car1 = new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010);
+        carService.save(car1);
+
+        Parking parking = new Parking("parkingGlowny", 2, ParkingType.ABOVEGROUND);
+        parkingService.save(parking);
+
         this.mockMvc.perform(patch("/api/v1/car/1/setParking/1"))
                 .andExpect(status().isOk());
     }
@@ -83,29 +84,43 @@ public class CarControllerIntegrationTest {
 
         Parking parking = new Parking("parkingGlowny", 2, ParkingType.UNDERGROUND);
         parkingService.save(parking);
-        this.mockMvc.perform(patch("/api/v1/car/2/setParking/2"))
+        this.mockMvc.perform(patch("/api/v1/car/1/setParking/1"))
                 .andExpect(status().isNotAcceptable());
     }
 
     @Test
     void shouldReturnBadRequestFullParking() throws Exception {
-        Car car2 = new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010);
-        Car car3 = new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010);
-        carService.save(car2);
-        carService.save(car3);
+        for (int i = 0; i < 3; i++) {
+            carService.save(new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010));
+        }
+
+        Parking parking = new Parking("parkingGlowny", 2, ParkingType.ABOVEGROUND);
+        parkingService.save(parking);
 
         carService.setParking(1L, 1L);
         carService.setParking(2L, 1L);
-        this.mockMvc.perform(patch("/api/v1/car/1/setParking/1"))
+        this.mockMvc.perform(patch("/api/v1/car/3/setParking/1"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void shouldDeleteCar() throws Exception {
+        carService.save(new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010));
+
         this.mockMvc.perform(delete("/api/v1/car/1"))
                 .andExpect(status().isOk());
 
         Assertions.assertThrows(NotFoundException.class, () -> carService.findById(1L));
+    }
+
+    @Test
+    void shouldGetSecondPageContainingFourElements() throws Exception {
+        for (int i = 0; i < 14; i++) {
+            carService.save(new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010));
+        }
+
+        this.mockMvc.perform(get("/api/v1/car/all?page=1"))
+                .andExpect(jsonPath("$", hasSize(4)));
     }
 
 }
