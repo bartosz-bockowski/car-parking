@@ -19,8 +19,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,6 +65,16 @@ public class ParkingControllerIntegrationTest {
                 .andExpect(status().isOk());
 
         Assertions.assertThrows(NotFoundException.class, () -> parkingService.findById(1L));
+    }
+
+    @Test
+    void shouldGetSecondPageContainingFourElements() throws Exception {
+        for (int i = 0; i < 14; i++) {
+            parkingService.save(new Parking("parking", 300, ParkingType.UNDERGROUND));
+        }
+
+        this.mockMvc.perform(get("/api/v1/parking/all?page=1"))
+                .andExpect(jsonPath("$", hasSize(4)));
     }
 
 }
