@@ -1,26 +1,24 @@
 package com.example.carparking.command;
 
 import com.example.carparking.model.ParkingType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
+@AllArgsConstructor
 public class ParkingCommand {
 
-    public ParkingCommand(String name, int numberOfSpaces, ParkingType type) {
-        this.name = name;
-        this.numberOfSpaces = numberOfSpaces;
-        this.type = type;
-    }
-
-    @NotEmpty
+    @NotBlank(message = "parking name cannot be empty")
     private String name;
 
+    @Min(value = 1, message = "number of spaces at parking must be positive")
     private int numberOfSpaces;
 
-    @NotNull
+    @NotNull(message = "you have to enter parking type")
     private ParkingType type;
 
 }

@@ -37,7 +37,7 @@ public class CarService {
     public Car setParking(Long carId, Long parkingId) {
         Car car = findById(carId);
         Parking parking = parkingService.findById(parkingId);
-        parking.checkCar(car);
+        parkingService.checkCarCompatibilityWithParking(car, parking);
         car.setParking(parking);
         return update(car);
     }

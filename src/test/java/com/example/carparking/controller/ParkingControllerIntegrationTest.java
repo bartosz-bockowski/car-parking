@@ -46,6 +46,13 @@ public class ParkingControllerIntegrationTest {
                 .build();
     }
 
+    void saveSampleParkings(int numberOfParkings) {
+        for (int i = 0; i < numberOfParkings; i++) {
+            Parking parking = new Parking("parking2", 100, ParkingType.UNDERGROUND);
+            parkingService.save(parking);
+        }
+    }
+
     @Test
     void shouldPostParking() throws Exception {
         ParkingCommand parkingCommand = new ParkingCommand("parkingGlowny", 900, ParkingType.ABOVEGROUND);
@@ -59,8 +66,8 @@ public class ParkingControllerIntegrationTest {
 
     @Test
     void shouldDeleteParking() throws Exception {
-        Parking parking = new Parking("parking2", 100, ParkingType.UNDERGROUND);
-        parkingService.save(parking);
+        saveSampleParkings(1);
+
         this.mockMvc.perform(delete("/api/v1/parking/1"))
                 .andExpect(status().isOk());
 
@@ -69,9 +76,7 @@ public class ParkingControllerIntegrationTest {
 
     @Test
     void shouldGetSecondPageContainingFourElements() throws Exception {
-        for (int i = 0; i < 14; i++) {
-            parkingService.save(new Parking("parking", 300, ParkingType.UNDERGROUND));
-        }
+        saveSampleParkings(14);
 
         this.mockMvc.perform(get("/api/v1/parking/all?page=1"))
                 .andExpect(jsonPath("$", hasSize(4)));

@@ -54,6 +54,13 @@ public class CarControllerIntegrationTest {
                 .build();
     }
 
+    void saveSampleCars(int numberOfCars) {
+        for (int i = 0; i < numberOfCars; i++) {
+            Car car1 = new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010);
+            carService.save(car1);
+        }
+    }
+
     @Test
     void shouldPostCar() throws Exception {
         CarCommand carCommand = new CarCommand("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.DIESEL, 2010);
@@ -67,8 +74,7 @@ public class CarControllerIntegrationTest {
 
     @Test
     void shouldSetParking() throws Exception {
-        Car car1 = new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010);
-        carService.save(car1);
+        saveSampleCars(1);
 
         Parking parking = new Parking("parkingGlowny", 2, ParkingType.ABOVEGROUND);
         parkingService.save(parking);
@@ -79,8 +85,7 @@ public class CarControllerIntegrationTest {
 
     @Test
     void shouldReturnNotAcceptableForbiddenEngine() throws Exception {
-        Car car1 = new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010);
-        carService.save(car1);
+        saveSampleCars(1);
 
         Parking parking = new Parking("parkingGlowny", 2, ParkingType.UNDERGROUND);
         parkingService.save(parking);
@@ -90,9 +95,7 @@ public class CarControllerIntegrationTest {
 
     @Test
     void shouldReturnBadRequestFullParking() throws Exception {
-        for (int i = 0; i < 3; i++) {
-            carService.save(new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010));
-        }
+        saveSampleCars(3);
 
         Parking parking = new Parking("parkingGlowny", 2, ParkingType.ABOVEGROUND);
         parkingService.save(parking);
@@ -105,7 +108,7 @@ public class CarControllerIntegrationTest {
 
     @Test
     void shouldDeleteCar() throws Exception {
-        carService.save(new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010));
+        saveSampleCars(1);
 
         this.mockMvc.perform(delete("/api/v1/car/1"))
                 .andExpect(status().isOk());
@@ -115,9 +118,7 @@ public class CarControllerIntegrationTest {
 
     @Test
     void shouldGetSecondPageContainingFourElements() throws Exception {
-        for (int i = 0; i < 14; i++) {
-            carService.save(new Car("brand1", "model1", new BigDecimal("35193.30"), 5000, 2000, VehicleEngineType.LPG, 2010));
-        }
+        saveSampleCars(14);
 
         this.mockMvc.perform(get("/api/v1/car/all?page=1"))
                 .andExpect(jsonPath("$", hasSize(4)));

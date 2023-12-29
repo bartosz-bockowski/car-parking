@@ -1,13 +1,11 @@
 package com.example.carparking.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class ApiError {
-
-    public ApiError(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
 
     private String errorMessage;
 
