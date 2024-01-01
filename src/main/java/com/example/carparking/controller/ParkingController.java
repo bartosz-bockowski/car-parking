@@ -1,11 +1,10 @@
 package com.example.carparking.controller;
 
 import com.example.carparking.command.ParkingCommand;
-import com.example.carparking.domain.Parking;
 import com.example.carparking.dto.ParkingDTO;
+import com.example.carparking.mapper.ParkingMapper;
 import com.example.carparking.service.ParkingService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
@@ -22,19 +21,19 @@ public class ParkingController {
 
     private final ParkingService parkingService;
 
-    private final ModelMapper modelMapper;
+    private final ParkingMapper parkingMapper;
 
     @PostMapping
     public ResponseEntity<ParkingDTO> save(@Valid @RequestBody ParkingCommand parkingCommand) {
-        return new ResponseEntity<>(modelMapper
-                .map(parkingService.save(
-                        modelMapper.map(parkingCommand, Parking.class)), ParkingDTO.class), HttpStatus.CREATED);
+        return new ResponseEntity<>(parkingMapper
+                .parkingToParkingDTO(parkingService.save(parkingMapper
+                        .parkingCommandToParking(parkingCommand))), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
     public List<ParkingDTO> getAll(@SortDefault("id") Pageable pageable) {
         return parkingService.findAll(pageable).stream()
-                .map(parking -> modelMapper.map(parking, ParkingDTO.class))
+                .map(parkingMapper::parkingToParkingDTO)
                 .toList();
     }
 
